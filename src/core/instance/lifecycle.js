@@ -19,7 +19,7 @@ import {
 
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
-
+//初始化部分实例属性、生命周期相关的标识。
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
@@ -52,7 +52,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (vm._isMounted) {
       callHook(vm, 'beforeUpdate')
     }
-    const prevEl = vm.$el
+    const prevEl = vm.$el._update
     const prevVnode = vm._vnode
     const prevActiveInstance = activeInstance
     activeInstance = vm

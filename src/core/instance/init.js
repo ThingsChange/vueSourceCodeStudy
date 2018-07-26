@@ -15,9 +15,8 @@ let uid = 0
 export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
-    // a uid
+      //给当前vm添加唯一的_uid
     vm._uid = uid++
-
     let startTag, endTag
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
@@ -27,6 +26,7 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     // a flag to avoid this being observed
+    //监听变化的时候用于过滤掉vm对象 详见observe 方法
     vm._isVue = true
     // merge options
     if (options && options._isComponent) {
@@ -49,12 +49,18 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
+    //初始化部分属性，如￥parent,$root，$ref,以及某些生命周期标识_isMounted ,_isDestroyed等
     initLifecycle(vm)
+    //初始化事件的相关属性，父组件中绑定在自定义标签上的事件，供子组件处理。
     initEvents(vm)
+  //添加虚拟dom、slot等相关的属性和createElement方法
     initRender(vm)
     callHook(vm, 'beforeCreate')
+    //绑定options里面的inject属性对应的值
     initInjections(vm) // resolve injections before data/props
+    //绑定了data,prop,method等属性，并进行了数据的双向绑定，Observer,dep,watcher 在此时介入。
     initState(vm)
+    //绑定options里面的provide属性对应的值，一般和inject配合使用
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
 
