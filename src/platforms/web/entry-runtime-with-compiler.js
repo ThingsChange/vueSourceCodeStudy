@@ -93,7 +93,7 @@ function getOuterHTML (el: Element): string {
     return container.innerHTML
   }
 }
-
+//Vue全局函数 compile
 Vue.compile = compileToFunctions
 
 export default Vue

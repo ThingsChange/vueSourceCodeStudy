@@ -18,14 +18,19 @@ import {
   getAndRemoveAttr,
   pluckModuleFunction
 } from '../helpers'
-
+// 匹配@或v-on开头的属性，也就是我们添加事件的语法
 export const onRE = /^@|^v-on:/
+//匹配v- 或者@ 或者 ：开头的属性，绑定数据或者方法的   v-bind :love  :love   @love
 export const dirRE = /^v-|^@|^:/
+//匹配v-for中的属性值，比如item in items、(item, index) of items。
 export const forAliasRE = /(.*?)\s+(?:in|of)\s+(.*)/
+//
 export const forIteratorRE = /\((\{[^}]*\}|[^,]*),([^,]*)(?:,([^,]*))?\)/
-
+//:开头的属性
 const argRE = /:(.*)$/
+//匹配:或v-bind开头的属性，即绑定数据的语法。
 const bindRE = /^:|^v-bind:/
+//匹配事件修饰符  click.stop
 const modifierRE = /\.[^.]+/g
 
 const decodeHTMLCached = cached(he.decode)
@@ -64,8 +69,9 @@ export function parse (
   template: string,
   options: CompilerOptions
 ): ASTElement | void {
+  //编译警告函数
   warn = options.warn || baseWarn
-
+//是不是pre标签   no=()=>false;
   platformIsPreTag = options.isPreTag || no
   platformMustUseProp = options.mustUseProp || no
   platformGetTagNamespace = options.getTagNamespace || no
