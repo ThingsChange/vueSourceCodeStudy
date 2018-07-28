@@ -71,7 +71,7 @@ export function genElement (el: ASTElement, state: CodegenState): string {
       const data = el.plain ? undefined : genData(el, state)
 
       const children = el.inlineTemplate ? null : genChildren(el, state, true)
-      code = `_c('${el.tag}'${
+      code = `_c('${el.tag}'   ${
         data ? `,${data}` : '' // data
       }${
         children ? `,${children}` : '' // children

@@ -63,6 +63,7 @@ export function parseHTML (html, options) {
   while (html) {
     last = html
     // Make sure we're not in a plaintext content element like script/style
+    //过滤掉  注释<!-- -->内容
     if (!lastTag || !isPlainTextElement(lastTag)) {
       let textEnd = html.indexOf('<')
       if (textEnd === 0) {
@@ -80,9 +81,9 @@ export function parseHTML (html, options) {
         }
 
         // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+        //过滤掉 <[ ]>的
         if (conditionalComment.test(html)) {
           const conditionalEnd = html.indexOf(']>')
-
           if (conditionalEnd >= 0) {
             advance(conditionalEnd + 2)
             continue

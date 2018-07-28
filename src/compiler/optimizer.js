@@ -4,7 +4,7 @@ import { makeMap, isBuiltInTag, cached, no } from 'shared/util'
 
 let isStaticKey
 let isPlatformReservedTag
-
+//返回的是一个函数，判断是否不是在   这些静态属性 中
 const genStaticKeysCached = cached(genStaticKeys)
 
 /**
@@ -20,17 +20,22 @@ const genStaticKeysCached = cached(genStaticKeys)
  */
 export function optimize (root: ?ASTElement, options: CompilerOptions) {
   if (!root) return
+  //isStaticKey 为boolean值，表示是否为静态属性
   isStaticKey = genStaticKeysCached(options.staticKeys || '')
   isPlatformReservedTag = options.isReservedTag || no
   // first pass: mark all non-static nodes.
+  //标记ast中所有的静态和非静态结点
   markStatic(root)
   // second pass: mark static roots.
+  //标记ast中静态的根节点
   markStaticRoots(root, false)
 }
 
 function genStaticKeys (keys: string): Function {
   return makeMap(
     'type,tag,attrsList,attrsMap,plain,parent,children,attrs' +
+    //angry 这里多加个括号会死啊
+    // (keys?(','+keys):'')
     (keys ? ',' + keys : '')
   )
 }
@@ -75,8 +80,8 @@ function markStaticRoots (node: ASTNode, isInFor: boolean) {
     // For a node to qualify as a static root, it should have children that
     // are not just static text. Otherwise the cost of hoisting out will
     // outweigh the benefits and it's better off to just always render it fresh.
-    if (node.static && node.children.length && !(
-      node.children.length === 1 &&
+    if (node.static && node.children.length && !(//节点静态 节点有子节点
+      node.children.length === 1 &&//  除了   子节点是一个静态文本 的
       node.children[0].type === 3
     )) {
       node.staticRoot = true
@@ -96,7 +101,7 @@ function markStaticRoots (node: ASTNode, isInFor: boolean) {
     }
   }
 }
-
+//判断该节点是不是静态
 function isStatic (node: ASTNode): boolean {
   if (node.type === 2) { // expression
     return false
@@ -104,12 +109,13 @@ function isStatic (node: ASTNode): boolean {
   if (node.type === 3) { // text
     return true
   }
+  //
   return !!(node.pre || (
-    !node.hasBindings && // no dynamic bindings
+    !node.hasBindings && // no dynamic bindings 结点没有动态属性，即没有任何指令、数据绑定、事件绑定等。
     !node.if && !node.for && // not v-if or v-for or v-else
-    !isBuiltInTag(node.tag) && // not a built-in
-    isPlatformReservedTag(node.tag) && // not a component
-    !isDirectChildOfTemplateFor(node) &&
+    !isBuiltInTag(node.tag) && // not a built-in 不是内置的标签，内置的标签有slot和component。
+    isPlatformReservedTag(node.tag) && // not a component 是平台保留标签，即HTML或SVG标签。
+    !isDirectChildOfTemplateFor(node) &&//不是template标签的直接子元素且没有包含在for循环中
     Object.keys(node).every(isStaticKey)
   ))
 }

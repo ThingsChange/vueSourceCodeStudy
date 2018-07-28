@@ -39,6 +39,7 @@ export default class Dep {
     // stabilize the subscriber list first
     const subs = this.subs.slice()
     for (let i = 0, l = subs.length; i < l; i++) {
+      //去调用对应watcher中的回调函数
       subs[i].update()
     }
   }

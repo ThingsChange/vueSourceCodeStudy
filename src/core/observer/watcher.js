@@ -98,6 +98,7 @@ export default class Watcher {
     let value
     const vm = this.vm
     try {
+      //此处不就是调用expOrFn (数据更新之后回调）的地方吗
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {

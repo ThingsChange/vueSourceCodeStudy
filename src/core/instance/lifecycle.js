@@ -47,14 +47,17 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  //创建或者 更新方法
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     if (vm._isMounted) {
       callHook(vm, 'beforeUpdate')
     }
+    //先保存目前的虚拟node Vm实例
     const prevEl = vm.$el._update
     const prevVnode = vm._vnode
     const prevActiveInstance = activeInstance
+    //赋值为新变更之后的实例以及虚拟dom
     activeInstance = vm
     vm._vnode = vnode
     // Vue.prototype.__patch__ is injected in entry points
@@ -178,6 +181,7 @@ export function mountComponent (
       const endTag = `vue-perf-end:${id}`
 
       mark(startTag)
+      //生生Vnode对象
       const vnode = vm._render()
       mark(endTag)
       measure(`vue ${name} render`, startTag, endTag)
@@ -189,10 +193,12 @@ export function mountComponent (
     }
   } else {
     updateComponent = () => {
+      //vm._render() 生生成新的Vnode对象
       vm._update(vm._render(), hydrating)
     }
   }
-
+  //页面绑定的数据更新的 时候，出发监听该数据的watcher
+  // updateComponent在watcher中被作为函数赋值给getter,而取值是需要调用get,get调用getter，懂了？
   vm._watcher = new Watcher(vm, updateComponent, noop)
   hydrating = false
 

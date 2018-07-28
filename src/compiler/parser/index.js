@@ -74,6 +74,7 @@ export function parse (
 //是不是pre标签   no=()=>false;
   platformIsPreTag = options.isPreTag || no
   platformMustUseProp = options.mustUseProp || no
+  //获取命名空间，svg和math
   platformGetTagNamespace = options.getTagNamespace || no
 
   transforms = pluckModuleFunction(options.modules, 'transformNode')
@@ -104,7 +105,7 @@ export function parse (
     }
     if (platformIsPreTag(element.tag)) {
       inPre = false
-    }
+  }
   }
 
   parseHTML(template, {
